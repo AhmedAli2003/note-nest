@@ -7,7 +7,7 @@ import {
   deleteTask
 } from "../db/repos/tasksRepo"
 import { assertString, assertBoolean, assertOneOf, assertNumber } from "./validate"
-import type { TaskCreateInput, TaskUpdateInput, Priority } from "../../shared/types"
+import type { TaskCreateInput, TaskUpdateInput, Priority } from "@shared/types"
 
 export function registerTasksIpc(): void {
   ipcMain.handle("tasks:list", () => listTasks())
@@ -29,7 +29,7 @@ export function registerTasksIpc(): void {
     const { id, title, due_at, priority, is_done } = input as TaskUpdateInput
     assertString(id, "id")
     if (title !== undefined) assertString(title, "title")
-    if (due_at !== undefined) assertNumber(due_at, "due_at")
+    if (due_at !== undefined && due_at !== null) assertNumber(due_at, "due_at")
     if (priority !== undefined) assertOneOf(priority, ["high", "medium", "low"] as const, "priority")
     if (is_done !== undefined) assertBoolean(is_done, "is_done")
     return updateTask({ id, title, due_at, priority, is_done })

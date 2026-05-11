@@ -7,7 +7,7 @@ import {
   deleteArticle
 } from "../db/repos/articlesRepo"
 import { assertString } from "./validate"
-import type { ArticleCreateInput, ArticleUpdateInput } from "../../shared/types"
+import type { ArticleCreateInput, ArticleUpdateInput } from "@shared/types"
 
 export function registerArticlesIpc(): void {
   ipcMain.handle("articles:list", () => listArticles())

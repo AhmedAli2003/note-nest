@@ -1,14 +1,16 @@
 import { getDb } from ".."
-import { newId } from "../../../shared/id"
-import type { Priority, Task, TaskCreateInput, TaskUpdateInput } from "../../../shared/types"
+import { newId } from "@shared/id"
+import type { Priority, Task, TaskCreateInput, TaskUpdateInput } from "@shared/types"
+
+const db = getDb()
 
 const stmt = {
-  list: getDb().prepare("SELECT * FROM tasks ORDER BY created_at DESC"),
-  get: getDb().prepare("SELECT * FROM tasks WHERE id = ?"),
-  insert: getDb().prepare(
+  list: db.prepare("SELECT * FROM tasks ORDER BY created_at DESC"),
+  get: db.prepare("SELECT * FROM tasks WHERE id = ?"),
+  insert: db.prepare(
     "INSERT INTO tasks (id, title, due_at, priority, is_done, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)"
   ),
-  delete: getDb().prepare("DELETE FROM tasks WHERE id = ?")
+  delete: db.prepare("DELETE FROM tasks WHERE id = ?")
 }
 
 function rowToTask(row: Record<string, unknown>): Task {
@@ -75,7 +77,7 @@ export function updateTask(input: TaskUpdateInput): Task {
   params.push(now)
   params.push(input.id)
 
-  const result = getDb().prepare(`UPDATE tasks SET ${sets.join(", ")} WHERE id = ?`).run(...params)
+  const result = db.prepare(`UPDATE tasks SET ${sets.join(", ")} WHERE id = ?`).run(...params)
   if (result.changes === 0) throw new Error(`tasks ${input.id} not found`)
   return getTask(input.id)!
 }

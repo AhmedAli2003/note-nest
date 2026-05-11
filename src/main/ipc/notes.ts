@@ -7,7 +7,7 @@ import {
   deleteNote
 } from "../db/repos/notesRepo"
 import { assertString } from "./validate"
-import type { NoteCreateInput, NoteUpdateInput } from "../../shared/types"
+import type { NoteCreateInput, NoteUpdateInput } from "@shared/types"
 
 export function registerNotesIpc(): void {
   ipcMain.handle("notes:list", () => listNotes())

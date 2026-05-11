@@ -9,7 +9,7 @@ import type {
   Article,
   ArticleCreateInput,
   ArticleUpdateInput
-} from "../shared/types"
+} from "@shared/types"
 
 const api = {
   ping: () => ipcRenderer.invoke("app:ping") as Promise<"pong">,

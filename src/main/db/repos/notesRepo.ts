@@ -1,23 +1,30 @@
 import { getDb } from ".."
-import { newId } from "../../../shared/id"
-import type { Note, NoteCreateInput, NoteUpdateInput } from "../../../shared/types"
+import { newId } from "@shared/id"
+import type { Note, NoteCreateInput, NoteUpdateInput } from "@shared/types"
+
+const db = getDb()
 
 const stmt = {
-  list: getDb().prepare("SELECT * FROM notes ORDER BY updated_at DESC"),
-  get: getDb().prepare("SELECT * FROM notes WHERE id = ?"),
-  insert: getDb().prepare(
+  list: db.prepare("SELECT * FROM notes ORDER BY updated_at DESC"),
+  get: db.prepare("SELECT * FROM notes WHERE id = ?"),
+  insert: db.prepare(
     "INSERT INTO notes (id, text, created_at, updated_at) VALUES (?, ?, ?, ?)"
   ),
-  update: getDb().prepare("UPDATE notes SET text = ?, updated_at = ? WHERE id = ?"),
-  delete: getDb().prepare("DELETE FROM notes WHERE id = ?")
+  update: db.prepare("UPDATE notes SET text = ?, updated_at = ? WHERE id = ?"),
+  delete: db.prepare("DELETE FROM notes WHERE id = ?")
 }
 
 function rowToNote(row: Record<string, unknown>): Note {
-  return row as unknown as Note
+  return {
+    id: row.id as string,
+    text: row.text as string,
+    created_at: row.created_at as number,
+    updated_at: row.updated_at as number
+  }
 }
 
 export function listNotes(): Note[] {
-  return stmt.list.all() as Note[]
+  return (stmt.list.all() as Record<string, unknown>[]).map(rowToNote)
 }
 
 export function getNote(id: string): Note | null {

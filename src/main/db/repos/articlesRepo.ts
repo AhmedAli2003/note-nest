@@ -1,22 +1,31 @@
 import { getDb } from ".."
-import { newId } from "../../../shared/id"
-import type { Article, ArticleCreateInput, ArticleUpdateInput } from "../../../shared/types"
+import { newId } from "@shared/id"
+import type { Article, ArticleCreateInput, ArticleUpdateInput } from "@shared/types"
+
+const db = getDb()
 
 const stmt = {
-  list: getDb().prepare("SELECT * FROM articles ORDER BY updated_at DESC"),
-  get: getDb().prepare("SELECT * FROM articles WHERE id = ?"),
-  insert: getDb().prepare(
+  list: db.prepare("SELECT * FROM articles ORDER BY updated_at DESC"),
+  get: db.prepare("SELECT * FROM articles WHERE id = ?"),
+  insert: db.prepare(
     "INSERT INTO articles (id, title, body_json, body_html, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)"
   ),
-  delete: getDb().prepare("DELETE FROM articles WHERE id = ?")
+  delete: db.prepare("DELETE FROM articles WHERE id = ?")
 }
 
 function rowToArticle(row: Record<string, unknown>): Article {
-  return row as unknown as Article
+  return {
+    id: row.id as string,
+    title: row.title as string,
+    body_json: row.body_json as string,
+    body_html: row.body_html as string,
+    created_at: row.created_at as number,
+    updated_at: row.updated_at as number
+  }
 }
 
 export function listArticles(): Article[] {
-  return stmt.list.all() as Article[]
+  return (stmt.list.all() as Record<string, unknown>[]).map(rowToArticle)
 }
 
 export function getArticle(id: string): Article | null {
@@ -55,7 +64,7 @@ export function updateArticle(input: ArticleUpdateInput): Article {
   params.push(now)
   params.push(input.id)
 
-  const result = getDb().prepare(`UPDATE articles SET ${sets.join(", ")} WHERE id = ?`).run(...params)
+  const result = db.prepare(`UPDATE articles SET ${sets.join(", ")} WHERE id = ?`).run(...params)
   if (result.changes === 0) throw new Error(`articles ${input.id} not found`)
   return getArticle(input.id)!
 }
