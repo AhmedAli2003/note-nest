@@ -25,7 +25,7 @@ export function EditorToolbar({ editor }: EditorToolbarProps) {
     label,
     children,
   }: {
-    onClick: () => void
+    onClick: (e: React.MouseEvent) => void
     isActive?: boolean
     disabled?: boolean
     label: string

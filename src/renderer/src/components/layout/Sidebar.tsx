@@ -21,8 +21,10 @@ export function Sidebar() {
 
   const handleExport = async () => {
     try {
-      await window.api.app.exportDb()
-      useToastStore.getState().push({ kind: "success", message: "Database exported" })
+      const path = await window.api.app.exportDb()
+      if (path) {
+        useToastStore.getState().push({ kind: "success", message: `Database exported to ${path}` })
+      }
     } catch (err) {
       const message = err instanceof Error ? err.message : "Export failed"
       useToastStore.getState().push({ kind: "error", message })

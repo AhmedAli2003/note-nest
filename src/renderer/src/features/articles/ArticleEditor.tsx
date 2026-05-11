@@ -7,6 +7,7 @@ import { ConfirmDialog } from "@/components/ui/ConfirmDialog"
 import { formatRelativeTime } from "@/lib/time"
 import { useArticlesStore, selectSelectedArticle } from "./store"
 import { useArticleAutoSave } from "./useArticleAutoSave"
+import { useToastStore } from "@/stores/toasts"
 import { buildExtensions } from "./tiptapExtensions"
 import { EditorToolbar } from "./EditorToolbar"
 
@@ -51,7 +52,9 @@ export function ArticleEditor() {
       const anchor = target.closest("a")
       if (anchor?.href) {
         e.preventDefault()
-        window.api.app.openExternal(anchor.href)
+        window.api.app.openExternal(anchor.href).catch(() => {
+          useToastStore.getState().push({ kind: "error", message: "Refused to open link (unsafe URL)" })
+        })
       }
     }
     el.addEventListener("click", onClick)

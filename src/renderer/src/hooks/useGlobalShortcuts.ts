@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import { useNavigate, useLocation } from "react-router-dom"
+import { router } from "@/app/router"
 import { useSearchStore } from "@/features/search/store"
 import { useNotesStore } from "@/features/notes/store"
 import { useTasksStore } from "@/features/tasks/store"
@@ -7,9 +7,6 @@ import { useArticlesStore } from "@/features/articles/store"
 import { useSettingsStore } from "@/stores/settings"
 
 export function useGlobalShortcuts() {
-  const navigate = useNavigate()
-  const location = useLocation()
-
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (!(e.metaKey || e.ctrlKey)) return
@@ -17,15 +14,15 @@ export function useGlobalShortcuts() {
       switch (e.key) {
         case "1":
           e.preventDefault()
-          navigate("/tasks")
+          router.navigate("/tasks")
           break
         case "2":
           e.preventDefault()
-          navigate("/notes")
+          router.navigate("/notes")
           break
         case "3":
           e.preventDefault()
-          navigate("/articles")
+          router.navigate("/articles")
           break
         case "f":
           e.preventDefault()
@@ -37,16 +34,10 @@ export function useGlobalShortcuts() {
           break
         case "n":
           e.preventDefault()
-          switch (location.pathname) {
-            case "/notes":
-              useNotesStore.getState().create()
-              break
-            case "/articles":
-              useArticlesStore.getState().create()
-              break
-            case "/tasks":
-              useTasksStore.getState().requestCreate()
-              break
+          { const path = router.state.location.pathname
+            if (path === "/notes") useNotesStore.getState().create()
+            if (path === "/articles") useArticlesStore.getState().create()
+            if (path === "/tasks") useTasksStore.getState().requestCreate()
           }
           break
       }
@@ -54,5 +45,5 @@ export function useGlobalShortcuts() {
 
     document.addEventListener("keydown", handler)
     return () => document.removeEventListener("keydown", handler)
-  }, [navigate, location.pathname])
+  }, [])
 }

@@ -60,10 +60,10 @@ export function LinkPopover({ editor, open, onClose, anchorRect }: LinkPopoverPr
   return (
     <div
       data-link-popover
-      className="absolute z-50 mt-1 flex items-center gap-2 rounded-lg border bg-white p-2 shadow-lg dark:border-neutral-700 dark:bg-neutral-900"
+      className="fixed z-50 mt-1 flex items-center gap-2 rounded-lg border bg-white p-2 shadow-lg dark:border-neutral-700 dark:bg-neutral-900"
       style={{
         left: anchorRect.left,
-        top: anchorRect.bottom + window.scrollY,
+        top: anchorRect.bottom + 4,
       }}
     >
       <Input

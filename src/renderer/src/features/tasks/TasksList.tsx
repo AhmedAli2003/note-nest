@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { CheckSquare, Plus } from "lucide-react"
 import { Button } from "@/components/ui/Button"
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog"
@@ -19,9 +19,18 @@ export function TasksList() {
   const sortBy = useTasksStore((s) => s.sortBy)
   const hideCompleted = useTasksStore((s) => s.hideCompleted)
   const isLoaded = useTasksStore((s) => s.isLoaded)
+  const wantsCreate = useTasksStore((s) => s.wantsCreate)
+  const clearCreate = useTasksStore((s) => s.clearCreate)
 
   const [dialog, setDialog] = useState<DialogState>({ kind: "closed" })
   const [deleting, setDeleting] = useState<Task | null>(null)
+
+  useEffect(() => {
+    if (wantsCreate) {
+      setDialog({ kind: "create" })
+      clearCreate()
+    }
+  }, [wantsCreate, clearCreate])
 
   if (!isLoaded) return null
 

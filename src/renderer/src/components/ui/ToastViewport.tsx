@@ -32,7 +32,7 @@ export function ToastViewport() {
             key={t.id}
             role="status"
             className={cn(
-              "flex items-center gap-2 rounded-lg border px-3 py-2 text-sm shadow-lg",
+              "flex max-w-sm items-center gap-2 rounded-lg border px-3 py-2 text-sm shadow-lg",
               colorMap[t.kind]
             )}
           >

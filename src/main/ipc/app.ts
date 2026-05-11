@@ -1,12 +1,8 @@
-import { ipcMain, shell, dialog, BrowserWindow } from "electron"
+import { ipcMain, shell, dialog, BrowserWindow, app } from "electron"
 import { closeDb, getDb } from "../db"
 import { join } from "path"
 import { copyFileSync } from "fs"
-import { app } from "electron"
-
-function assertString(v: unknown, name: string): asserts v is string {
-  if (typeof v !== "string") throw new Error(`${name} must be a string`)
-}
+import { assertString } from "./validate"
 
 function sourceDbPath(): string {
   return join(app.getPath("userData"), "note-nest.db")
