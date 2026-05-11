@@ -76,10 +76,12 @@ export function useArticleAutoSave(
   }, [articleId, draft, delayMs, save])
 
   useEffect(() => {
+    const capturedId = articleId
     return () => {
-      const { articleId: id, draft: d } = latestRef.current
-      if (id && (savedRef.current.id !== id || !shallowEqualDraft(savedRef.current, d))) {
-        void save(id, d)
+      if (!capturedId) return
+      const d = latestRef.current.draft
+      if (savedRef.current.id !== capturedId || !shallowEqualDraft(savedRef.current, d)) {
+        void save(capturedId, d)
       }
     }
   }, [articleId, save])

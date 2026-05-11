@@ -36,7 +36,7 @@ export function EditorToolbar({ editor }: EditorToolbarProps) {
     </IconButton>
   )
 
-  const btnClass = "h-8 w-8"
+  const btnClass = "h-4 w-4"
 
   return (
     <div className="flex items-center gap-1 border-b border-neutral-200 px-2 py-1 dark:border-neutral-800">

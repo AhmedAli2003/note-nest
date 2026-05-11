@@ -58,13 +58,12 @@ export function ArticleEditor() {
       bodyJson: selectedArticle.body_json,
       bodyHtml: selectedArticle.body_html,
     }
-    flush()
     seed(selectedArticle.id, draft)
     setTitle(selectedArticle.title)
     setBodyJson(selectedArticle.body_json)
     setBodyHtml(selectedArticle.body_html)
     editor?.commands.setContent(parsed, false)
-  }, [selectedArticle?.id])
+  }, [selectedArticle?.id, editor])
 
   if (!selectedArticle) {
     return (

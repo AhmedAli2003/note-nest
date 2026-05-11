@@ -52,10 +52,12 @@ export function useDebouncedSave(
   }, [noteId, text, delayMs, save])
 
   useEffect(() => {
+    const capturedId = noteId
     return () => {
-      const { noteId: id, text: t } = latestRef.current
-      if (id && (savedRef.current.id !== id || savedRef.current.text !== t)) {
-        void save(id, t)
+      if (!capturedId) return
+      const t = latestRef.current.text
+      if (savedRef.current.id !== capturedId || savedRef.current.text !== t) {
+        void save(capturedId, t)
       }
     }
   }, [noteId, save])
