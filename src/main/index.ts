@@ -1,5 +1,7 @@
 import { app, BrowserWindow } from "electron"
 import { join } from "path"
+import { getDb, closeDb } from "./db"
+import { registerIpc } from "./ipc"
 
 function createWindow(): void {
   const mainWindow = new BrowserWindow({
@@ -27,7 +29,11 @@ function createWindow(): void {
   }
 }
 
-app.whenReady().then(createWindow)
+app.whenReady().then(() => {
+  getDb()
+  registerIpc()
+  createWindow()
+})
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
@@ -39,4 +45,8 @@ app.on("activate", () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow()
   }
+})
+
+app.on("before-quit", () => {
+  closeDb()
 })

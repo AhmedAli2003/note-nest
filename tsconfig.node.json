@@ -5,11 +5,16 @@
     "moduleResolution": "bundler",
     "target": "ESNext",
     "outDir": "./out",
-    "types": ["node"]
+    "types": ["node"],
+    "baseUrl": ".",
+    "paths": {
+      "@shared/*": ["src/shared/*"]
+    }
   },
   "include": [
     "src/main/**/*",
     "src/preload/**/*",
+    "src/shared/**/*",
     "electron.vite.config.ts"
   ]
 }
