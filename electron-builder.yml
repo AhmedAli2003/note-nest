@@ -1,0 +1,34 @@
+appId: com.notenest.app
+productName: "Note Nest"
+copyright: "Copyright © 2026 Ahmed Abu Ali"
+
+directories:
+  output: dist
+  buildResources: buildResources
+
+files:
+  - out/**/*
+  - package.json
+
+asar: true
+asarUnpack:
+  - "**/*.node"
+  - "**/better-sqlite3/**"
+
+icon: buildResources/icon.ico
+
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+  artifactName: "${productName}-Setup-${version}.${ext}"
+
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  license: null
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: "Note Nest"
+  deleteAppDataOnUninstall: false
