@@ -16,7 +16,7 @@ export default defineConfig({
         name: "copy-migrations",
         closeBundle() {
           const src = resolve("src/main/db/migrations")
-          const dst = resolve("out/main/db/migrations")
+          const dst = resolve("out/main/migrations")
           if (existsSync(src)) {
             cpSync(src, dst, { recursive: true })
           }
