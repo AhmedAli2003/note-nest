@@ -2,6 +2,7 @@ import { NavLink } from "react-router-dom"
 import { Notebook, CheckSquare, StickyNote, FileText } from "lucide-react"
 import { cn } from "@/lib/cn"
 import { useNotesStore } from "@/features/notes/store"
+import { useTasksStore } from "@/features/tasks/store"
 
 const navItems = [
   { to: "/tasks", label: "Tasks", icon: CheckSquare },
@@ -11,6 +12,7 @@ const navItems = [
 
 export function Sidebar() {
   const noteCount = useNotesStore((s) => s.notes.length)
+  const taskCount = useTasksStore((s) => s.tasks.filter((t) => !t.is_done).length)
 
   return (
     <aside className="flex w-56 flex-col border-r border-neutral-200 bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-950">
@@ -40,6 +42,11 @@ export function Sidebar() {
             {item.to === "/notes" && noteCount > 0 && (
               <span className="rounded-full bg-neutral-300 px-2 text-xs text-neutral-700 dark:bg-neutral-700 dark:text-neutral-200">
                 {noteCount}
+              </span>
+            )}
+            {item.to === "/tasks" && taskCount > 0 && (
+              <span className="rounded-full bg-neutral-300 px-2 text-xs text-neutral-700 dark:bg-neutral-700 dark:text-neutral-200">
+                {taskCount}
               </span>
             )}
           </NavLink>

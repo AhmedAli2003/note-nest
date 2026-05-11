@@ -3,10 +3,12 @@ import { RouterProvider } from "react-router-dom"
 import { ThemeProvider } from "@/app/ThemeProvider"
 import { router } from "@/app/router"
 import { useNotesStore } from "@/features/notes/store"
+import { useTasksStore } from "@/features/tasks/store"
 
 function App() {
   useEffect(() => {
     useNotesStore.getState().load()
+    useTasksStore.getState().load()
   }, [])
 
   return (
