@@ -1,11 +1,17 @@
-import { FileText } from "lucide-react"
+import { useEffect } from "react"
+import { useArticlesStore } from "./store"
+import { ArticlesList } from "./ArticlesList"
+import { ArticleEditor } from "./ArticleEditor"
 
 export default function ArticlesPage() {
+  useEffect(() => {
+    useArticlesStore.getState().load()
+  }, [])
+
   return (
-    <div className="flex h-full flex-col items-center justify-center gap-3 text-neutral-400">
-      <FileText className="h-12 w-12" />
-      <p className="text-lg font-medium text-neutral-500">No articles yet</p>
-      <p className="text-sm">Coming in phase 4</p>
+    <div className="flex h-full">
+      <ArticlesList />
+      <ArticleEditor />
     </div>
   )
 }
