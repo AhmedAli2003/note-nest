@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { useNotesStore } from "./store"
 
 type SaveStatus = "idle" | "saving" | "saved" | "error"
@@ -7,70 +7,58 @@ export function useDebouncedSave(
   noteId: string | null,
   text: string,
   delayMs = 500
-): { status: SaveStatus; flush: () => void } {
+) {
   const [status, setStatus] = useState<SaveStatus>("idle")
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const noteIdRef = useRef(noteId)
 
-  const doSave = async (id: string, t: string) => {
+  const savedRef = useRef<{ id: string | null; text: string }>({
+    id: null,
+    text: ""
+  })
+
+  const latestRef = useRef({ noteId, text })
+  latestRef.current = { noteId, text }
+
+  const save = useCallback(async (id: string, t: string) => {
+    if (savedRef.current.id === id && savedRef.current.text === t) return
     setStatus("saving")
     try {
       await useNotesStore.getState().update(id, t)
+      savedRef.current = { id, text: t }
       setStatus("saved")
     } catch {
       setStatus("error")
     }
-  }
+  }, [])
 
-  const flush = () => {
-    if (timerRef.current) {
-      clearTimeout(timerRef.current)
-      timerRef.current = null
-    }
-    if (noteIdRef.current) {
-      doSave(noteIdRef.current, text)
-    }
-  }
+  const flush = useCallback(() => {
+    const { noteId: id, text: t } = latestRef.current
+    if (id) void save(id, t)
+  }, [save])
+
+  const seed = useCallback((id: string, t: string) => {
+    savedRef.current = { id, text: t }
+    setStatus("idle")
+  }, [])
 
   useEffect(() => {
-    noteIdRef.current = noteId
-
     if (!noteId) {
       setStatus("idle")
       return
     }
+    if (savedRef.current.id === noteId && savedRef.current.text === text) return
 
-    if (timerRef.current) {
-      clearTimeout(timerRef.current)
-    }
-
-    timerRef.current = setTimeout(() => {
-      doSave(noteId, text)
-    }, delayMs)
-
-    return () => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current)
-        timerRef.current = null
-      }
-    }
-  }, [text, noteId, delayMs])
+    const timer = setTimeout(() => void save(noteId, text), delayMs)
+    return () => clearTimeout(timer)
+  }, [noteId, text, delayMs, save])
 
   useEffect(() => {
     return () => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current)
-        timerRef.current = null
+      const { noteId: id, text: t } = latestRef.current
+      if (id && (savedRef.current.id !== id || savedRef.current.text !== t)) {
+        void save(id, t)
       }
     }
-  }, [])
+  }, [noteId, save])
 
-  useEffect(() => {
-    if (noteIdRef.current !== noteId) {
-      flush()
-      noteIdRef.current = noteId
-    }
-  }, [noteId])
-
-  return { status, flush }
+  return { status, flush, seed }
 }

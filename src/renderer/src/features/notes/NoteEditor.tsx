@@ -6,8 +6,6 @@ import { ConfirmDialog } from "@/components/ui/ConfirmDialog"
 import { formatRelativeTime } from "@/lib/time"
 import { useNotesStore, selectSelectedNote } from "./store"
 import { useDebouncedSave } from "./useDebouncedSave"
-import type { Note } from "@shared/types"
-
 export function NoteEditor() {
   const selectedNote = useNotesStore(selectSelectedNote)
   const remove = useNotesStore((s) => s.remove)
@@ -15,13 +13,14 @@ export function NoteEditor() {
   const [confirmOpen, setConfirmOpen] = useState(false)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
-  const { status, flush } = useDebouncedSave(
+  const { status, flush, seed } = useDebouncedSave(
     selectedNote?.id ?? null,
     text
   )
 
   useEffect(() => {
     if (selectedNote) {
+      seed(selectedNote.id, selectedNote.text)
       setText(selectedNote.text)
     }
   }, [selectedNote?.id])
@@ -55,8 +54,12 @@ export function NoteEditor() {
   }
 
   const handleDelete = async () => {
-    await remove(selectedNote.id)
     setConfirmOpen(false)
+    try {
+      await remove(selectedNote.id)
+    } catch {
+      /* store.error is set; phase 5 will surface it globally */
+    }
   }
 
   return (
@@ -78,6 +81,7 @@ export function NoteEditor() {
         className="flex-1"
         value={text}
         onChange={(e) => setText(e.target.value)}
+        onBlur={flush}
         placeholder="Start writing…"
       />
 

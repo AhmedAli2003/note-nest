@@ -38,7 +38,7 @@ export function Sidebar() {
             <item.icon className="h-4 w-4" />
             <span className="flex-1 text-left">{item.label}</span>
             {item.to === "/notes" && noteCount > 0 && (
-              <span className="rounded-full bg-neutral-200 px-2 text-xs dark:bg-neutral-800">
+              <span className="rounded-full bg-neutral-300 px-2 text-xs text-neutral-700 dark:bg-neutral-700 dark:text-neutral-200">
                 {noteCount}
               </span>
             )}

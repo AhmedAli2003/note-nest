@@ -1,6 +1,6 @@
 import { Plus, StickyNote } from "lucide-react"
 import { Button } from "@/components/ui/Button"
-import { useNotesStore, selectSelectedNote } from "./store"
+import { useNotesStore } from "./store"
 import { NotesListItem } from "./NotesListItem"
 
 export function NotesList() {

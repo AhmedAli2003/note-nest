@@ -40,13 +40,13 @@ export function Modal({ open, onClose, children, labelledBy, className }: ModalP
         if (e.target === ref.current) onClose()
       }}
       className={cn(
-        "rounded-xl bg-white p-6 shadow-2xl dark:bg-neutral-900",
+        "rounded-xl bg-white p-0 shadow-2xl dark:bg-neutral-900",
         "max-w-md text-neutral-900 dark:text-neutral-100",
         "backdrop:bg-black/50",
         className
       )}
     >
-      {children}
+      <div className="p-6">{children}</div>
     </dialog>
   )
 }
