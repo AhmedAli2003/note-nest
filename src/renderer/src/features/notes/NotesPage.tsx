@@ -1,11 +1,19 @@
-import { StickyNote } from "lucide-react"
+import { useEffect } from "react"
+import { useNotesStore } from "./store"
+import { NotesList } from "./NotesList"
+import { NoteEditor } from "./NoteEditor"
 
 export default function NotesPage() {
+  const load = useNotesStore((s) => s.load)
+
+  useEffect(() => {
+    load()
+  }, [load])
+
   return (
-    <div className="flex h-full flex-col items-center justify-center gap-3 text-neutral-400">
-      <StickyNote className="h-12 w-12" />
-      <p className="text-lg font-medium text-neutral-500">No notes yet</p>
-      <p className="text-sm">Coming in phase 2</p>
+    <div className="flex h-full">
+      <NotesList />
+      <NoteEditor />
     </div>
   )
 }
