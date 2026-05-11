@@ -42,6 +42,13 @@ export interface TaskUpdateInput {
   is_done?: boolean
 }
 
+// --- Search ---
+export interface SearchResults {
+  notes: Note[]
+  tasks: Task[]
+  articles: Article[]
+}
+
 // --- Articles ---
 export interface Article {
   id: string

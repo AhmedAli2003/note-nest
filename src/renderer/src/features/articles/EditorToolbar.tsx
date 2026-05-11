@@ -1,9 +1,11 @@
+import { useState, useCallback } from "react"
 import {
   Undo2, Redo2, Bold, Italic, Strikethrough, Code, CodeSquare,
   List, ListOrdered, Quote, Link2,
 } from "lucide-react"
 import { IconButton } from "@/components/ui/IconButton"
 import { cn } from "@/lib/cn"
+import { LinkPopover } from "./LinkPopover"
 import type { Editor } from "@tiptap/react"
 
 interface EditorToolbarProps {
@@ -11,6 +13,9 @@ interface EditorToolbarProps {
 }
 
 export function EditorToolbar({ editor }: EditorToolbarProps) {
+  const [linkOpen, setLinkOpen] = useState(false)
+  const [linkAnchor, setLinkAnchor] = useState<DOMRect | null>(null)
+
   if (!editor) return null
 
   const Btn = ({
@@ -38,8 +43,13 @@ export function EditorToolbar({ editor }: EditorToolbarProps) {
 
   const btnClass = "h-4 w-4"
 
+  const closeLink = useCallback(() => {
+    setLinkOpen(false)
+    setLinkAnchor(null)
+  }, [])
+
   return (
-    <div className="flex items-center gap-1 border-b border-neutral-200 px-2 py-1 dark:border-neutral-800">
+    <div className="relative flex items-center gap-1 border-b border-neutral-200 px-2 py-1 dark:border-neutral-800">
       <Btn
         label="Undo"
         onClick={() => editor.chain().focus().undo().run()}
@@ -149,20 +159,22 @@ export function EditorToolbar({ editor }: EditorToolbarProps) {
 
       <Btn
         label="Link"
-        onClick={() => {
-          const previousUrl = editor.getAttributes("link").href as string | undefined
-          const url = window.prompt("URL", previousUrl ?? "")
-          if (url === null) return
-          if (url === "") {
-            editor.chain().focus().extendMarkRange("link").unsetLink().run()
-            return
-          }
-          editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run()
+        onClick={(e: React.MouseEvent) => {
+          const rect = (e.currentTarget as HTMLElement).getBoundingClientRect()
+          setLinkAnchor(rect)
+          setLinkOpen(true)
         }}
         isActive={editor.isActive("link")}
       >
         <Link2 className={btnClass} />
       </Btn>
+
+      <LinkPopover
+        editor={editor}
+        open={linkOpen}
+        onClose={closeLink}
+        anchorRect={linkAnchor}
+      />
     </div>
   )
 }

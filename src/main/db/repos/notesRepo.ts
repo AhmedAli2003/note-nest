@@ -6,6 +6,7 @@ const db = getDb()
 
 const stmt = {
   list: db.prepare("SELECT * FROM notes ORDER BY updated_at DESC"),
+  search: db.prepare("SELECT * FROM notes WHERE text LIKE ? COLLATE NOCASE ORDER BY updated_at DESC LIMIT ?"),
   get: db.prepare("SELECT * FROM notes WHERE id = ?"),
   insert: db.prepare(
     "INSERT INTO notes (id, text, created_at, updated_at) VALUES (?, ?, ?, ?)"
@@ -21,6 +22,10 @@ function rowToNote(row: Record<string, unknown>): Note {
     created_at: row.created_at as number,
     updated_at: row.updated_at as number
   }
+}
+
+export function searchNotes(query: string, limit = 20): Note[] {
+  return (stmt.search.all(`%${query}%`, limit) as Record<string, unknown>[]).map(rowToNote)
 }
 
 export function listNotes(): Note[] {

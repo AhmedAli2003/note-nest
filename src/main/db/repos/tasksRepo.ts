@@ -6,6 +6,7 @@ const db = getDb()
 
 const stmt = {
   list: db.prepare("SELECT * FROM tasks ORDER BY created_at DESC"),
+  search: db.prepare("SELECT * FROM tasks WHERE title LIKE ? COLLATE NOCASE ORDER BY updated_at DESC LIMIT ?"),
   get: db.prepare("SELECT * FROM tasks WHERE id = ?"),
   insert: db.prepare(
     "INSERT INTO tasks (id, title, due_at, priority, is_done, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)"
@@ -23,6 +24,10 @@ function rowToTask(row: Record<string, unknown>): Task {
     created_at: row.created_at as number,
     updated_at: row.updated_at as number
   }
+}
+
+export function searchTasks(query: string, limit = 20): Task[] {
+  return (stmt.search.all(`%${query}%`, limit) as Record<string, unknown>[]).map(rowToTask)
 }
 
 export function listTasks(): Task[] {

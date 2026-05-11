@@ -45,7 +45,20 @@ export function ArticleEditor() {
     if (!editor) return
     const onBlur = () => flush()
     editor.on("blur", onBlur)
-    return () => { editor.off("blur", onBlur) }
+    const el = editor.view.dom
+    const onClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement
+      const anchor = target.closest("a")
+      if (anchor?.href) {
+        e.preventDefault()
+        window.api.app.openExternal(anchor.href)
+      }
+    }
+    el.addEventListener("click", onClick)
+    return () => {
+      editor.off("blur", onBlur)
+      el.removeEventListener("click", onClick)
+    }
   }, [editor, flush])
 
   useEffect(() => {

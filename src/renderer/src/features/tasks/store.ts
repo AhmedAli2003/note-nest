@@ -1,6 +1,7 @@
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
 import type { Task, TaskCreateInput, TaskUpdateInput } from "@shared/types"
+import { useToastStore } from "@/stores/toasts"
 
 type SortKey = "due" | "priority" | "status"
 
@@ -10,6 +11,7 @@ interface TasksState {
   error: string | null
   sortBy: SortKey
   hideCompleted: boolean
+  wantsCreate: boolean
   load: () => Promise<void>
   create: (input: TaskCreateInput) => Promise<Task>
   update: (input: TaskUpdateInput) => Promise<void>
@@ -17,6 +19,8 @@ interface TasksState {
   remove: (id: string) => Promise<void>
   setSortBy: (s: SortKey) => void
   setHideCompleted: (b: boolean) => void
+  requestCreate: () => void
+  clearCreate: () => void
 }
 
 export const useTasksStore = create<TasksState>()(
@@ -27,6 +31,7 @@ export const useTasksStore = create<TasksState>()(
       error: null,
       sortBy: "due",
       hideCompleted: false,
+      wantsCreate: false,
 
       load: async () => {
         try {
@@ -35,6 +40,7 @@ export const useTasksStore = create<TasksState>()(
         } catch (err) {
           const message = err instanceof Error ? err.message : "Failed to load tasks"
           set({ error: message })
+          useToastStore.getState().push({ kind: "error", message })
           throw err
         }
       },
@@ -47,6 +53,7 @@ export const useTasksStore = create<TasksState>()(
         } catch (err) {
           const message = err instanceof Error ? err.message : "Failed to create task"
           set({ error: message })
+          useToastStore.getState().push({ kind: "error", message })
           throw err
         }
       },
@@ -61,6 +68,7 @@ export const useTasksStore = create<TasksState>()(
         } catch (err) {
           const message = err instanceof Error ? err.message : "Failed to update task"
           set({ error: message })
+          useToastStore.getState().push({ kind: "error", message })
           throw err
         }
       },
@@ -77,6 +85,7 @@ export const useTasksStore = create<TasksState>()(
         } catch (err) {
           const message = err instanceof Error ? err.message : "Failed to toggle task"
           set({ error: message })
+          useToastStore.getState().push({ kind: "error", message })
           throw err
         }
       },
@@ -88,12 +97,15 @@ export const useTasksStore = create<TasksState>()(
         } catch (err) {
           const message = err instanceof Error ? err.message : "Failed to delete task"
           set({ error: message })
+          useToastStore.getState().push({ kind: "error", message })
           throw err
         }
       },
 
       setSortBy: (sortBy) => set({ sortBy }),
       setHideCompleted: (hideCompleted) => set({ hideCompleted }),
+      requestCreate: () => set({ wantsCreate: true }),
+      clearCreate: () => set({ wantsCreate: false }),
     }),
     {
       name: "note-nest:tasks:prefs",

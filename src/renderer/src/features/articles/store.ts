@@ -1,5 +1,6 @@
 import { create } from "zustand"
 import type { Article, ArticleUpdateInput } from "@shared/types"
+import { useToastStore } from "@/stores/toasts"
 
 interface ArticlesState {
   articles: Article[]
@@ -26,6 +27,7 @@ export const useArticlesStore = create<ArticlesState>()((set) => ({
     } catch (err) {
       const message = err instanceof Error ? err.message : "Failed to load articles"
       set({ error: message })
+      useToastStore.getState().push({ kind: "error", message })
       throw err
     }
   },
@@ -48,6 +50,7 @@ export const useArticlesStore = create<ArticlesState>()((set) => ({
     } catch (err) {
       const message = err instanceof Error ? err.message : "Failed to create article"
       set({ error: message })
+      useToastStore.getState().push({ kind: "error", message })
       throw err
     }
   },
@@ -64,6 +67,7 @@ export const useArticlesStore = create<ArticlesState>()((set) => ({
     } catch (err) {
       const message = err instanceof Error ? err.message : "Failed to save article"
       set({ error: message })
+      useToastStore.getState().push({ kind: "error", message })
       throw err
     }
   },
@@ -79,6 +83,7 @@ export const useArticlesStore = create<ArticlesState>()((set) => ({
     } catch (err) {
       const message = err instanceof Error ? err.message : "Failed to delete article"
       set({ error: message })
+      useToastStore.getState().push({ kind: "error", message })
       throw err
     }
   },

@@ -6,6 +6,7 @@ const db = getDb()
 
 const stmt = {
   list: db.prepare("SELECT * FROM articles ORDER BY updated_at DESC"),
+  search: db.prepare("SELECT * FROM articles WHERE title LIKE ? OR body_html LIKE ? COLLATE NOCASE ORDER BY updated_at DESC LIMIT ?"),
   get: db.prepare("SELECT * FROM articles WHERE id = ?"),
   insert: db.prepare(
     "INSERT INTO articles (id, title, body_json, body_html, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)"
@@ -22,6 +23,10 @@ function rowToArticle(row: Record<string, unknown>): Article {
     created_at: row.created_at as number,
     updated_at: row.updated_at as number
   }
+}
+
+export function searchArticles(query: string, limit = 20): Article[] {
+  return (stmt.search.all(`%${query}%`, `%${query}%`, limit) as Record<string, unknown>[]).map(rowToArticle)
 }
 
 export function listArticles(): Article[] {

@@ -1,5 +1,6 @@
 import { create } from "zustand"
 import type { Note } from "@shared/types"
+import { useToastStore } from "@/stores/toasts"
 
 interface NotesState {
   notes: Note[]
@@ -26,6 +27,7 @@ export const useNotesStore = create<NotesState>()((set, get) => ({
     } catch (err) {
       const message = err instanceof Error ? err.message : "Failed to load notes"
       set({ error: message })
+      useToastStore.getState().push({ kind: "error", message })
       throw err
     }
   },
@@ -44,6 +46,7 @@ export const useNotesStore = create<NotesState>()((set, get) => ({
     } catch (err) {
       const message = err instanceof Error ? err.message : "Failed to create note"
       set({ error: message })
+      useToastStore.getState().push({ kind: "error", message })
       throw err
     }
   },
@@ -60,6 +63,7 @@ export const useNotesStore = create<NotesState>()((set, get) => ({
     } catch (err) {
       const message = err instanceof Error ? err.message : "Failed to save note"
       set({ error: message })
+      useToastStore.getState().push({ kind: "error", message })
       throw err
     }
   },
@@ -75,6 +79,7 @@ export const useNotesStore = create<NotesState>()((set, get) => ({
     } catch (err) {
       const message = err instanceof Error ? err.message : "Failed to delete note"
       set({ error: message })
+      useToastStore.getState().push({ kind: "error", message })
       throw err
     }
   }

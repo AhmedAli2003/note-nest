@@ -1,9 +1,11 @@
 import { NavLink } from "react-router-dom"
-import { Notebook, CheckSquare, StickyNote, FileText } from "lucide-react"
+import { Notebook, CheckSquare, StickyNote, FileText, Settings, Download } from "lucide-react"
 import { cn } from "@/lib/cn"
 import { useNotesStore } from "@/features/notes/store"
 import { useTasksStore } from "@/features/tasks/store"
 import { useArticlesStore } from "@/features/articles/store"
+import { useSettingsStore } from "@/stores/settings"
+import { useToastStore } from "@/stores/toasts"
 
 const navItems = [
   { to: "/tasks", label: "Tasks", icon: CheckSquare },
@@ -15,6 +17,17 @@ export function Sidebar() {
   const noteCount = useNotesStore((s) => s.notes.length)
   const taskCount = useTasksStore((s) => s.tasks.filter((t) => !t.is_done).length)
   const articleCount = useArticlesStore((s) => s.articles.length)
+  const openSettings = useSettingsStore((s) => s.openDialog)
+
+  const handleExport = async () => {
+    try {
+      await window.api.app.exportDb()
+      useToastStore.getState().push({ kind: "success", message: "Database exported" })
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Export failed"
+      useToastStore.getState().push({ kind: "error", message })
+    }
+  }
 
   return (
     <aside className="flex w-56 flex-col border-r border-neutral-200 bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-950">
@@ -25,7 +38,7 @@ export function Sidebar() {
         </span>
       </div>
 
-      <nav className="flex flex-col gap-1 p-3">
+      <nav className="flex flex-1 flex-col gap-1 p-3">
         {navItems.map((item) => (
           <NavLink
             key={item.to}
@@ -59,6 +72,25 @@ export function Sidebar() {
           </NavLink>
         ))}
       </nav>
+
+      <div className="flex items-center gap-1 border-t border-neutral-200 p-3 dark:border-neutral-800">
+        <button
+          onClick={handleExport}
+          className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-700 dark:text-neutral-400 dark:hover:bg-neutral-800/50 dark:hover:text-neutral-200"
+          aria-label="Export database"
+        >
+          <Download className="h-4 w-4" />
+          <span>Export</span>
+        </button>
+        <button
+          onClick={openSettings}
+          className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-700 dark:text-neutral-400 dark:hover:bg-neutral-800/50 dark:hover:text-neutral-200"
+          aria-label="Settings"
+        >
+          <Settings className="h-4 w-4" />
+          <span>Settings</span>
+        </button>
+      </div>
     </aside>
   )
 }
