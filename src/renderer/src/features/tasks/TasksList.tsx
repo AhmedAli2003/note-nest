@@ -49,13 +49,15 @@ export function TasksList() {
         ) : visible.length === 0 ? (
           <div className="flex h-full flex-col items-center justify-center gap-3 text-neutral-400">
             <p className="text-sm">Nothing matches the current filters</p>
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => useTasksStore.getState().setHideCompleted(false)}
-            >
-              Show completed
-            </Button>
+            {hideCompleted && (
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => useTasksStore.getState().setHideCompleted(false)}
+              >
+                Show completed
+              </Button>
+            )}
           </div>
         ) : (
           <div className="space-y-1">
@@ -82,9 +84,13 @@ export function TasksList() {
         open={deleting !== null}
         onCancel={() => setDeleting(null)}
         onConfirm={async () => {
-          if (deleting) {
-            await useTasksStore.getState().remove(deleting.id)
-            setDeleting(null)
+          const task = deleting
+          setDeleting(null)
+          if (!task) return
+          try {
+            await useTasksStore.getState().remove(task.id)
+          } catch {
+            /* store.error is set; phase 5 will surface it globally */
           }
         }}
         title="Delete task?"

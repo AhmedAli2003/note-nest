@@ -17,6 +17,7 @@ export function isOverdue(task: Task): boolean {
 
 export function combineDateAndTime(date: Date, time: string): Date {
   const [h, m] = time.split(":").map(Number)
+  if (Number.isNaN(h) || Number.isNaN(m)) return new Date(date)
   const result = new Date(date)
   result.setHours(h, m, 0, 0)
   return result

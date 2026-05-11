@@ -41,7 +41,7 @@ export function TaskFilters() {
           type="checkbox"
           checked={hideCompleted}
           onChange={(e) => setHideCompleted(e.target.checked)}
-          className="h-3.5 w-3.5 rounded border-neutral-300 dark:border-neutral-600"
+          className="h-3.5 w-3.5 rounded accent-neutral-900 dark:accent-white"
         />
         Hide completed
       </label>

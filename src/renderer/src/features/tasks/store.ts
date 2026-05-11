@@ -1,6 +1,6 @@
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
-import type { Task, TaskCreateInput, TaskUpdateInput, Priority } from "@shared/types"
+import type { Task, TaskCreateInput, TaskUpdateInput } from "@shared/types"
 
 type SortKey = "due" | "priority" | "status"
 

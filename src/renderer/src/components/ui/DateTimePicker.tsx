@@ -109,6 +109,7 @@ export function DateTimePicker({
             onSelect={(d) => {
               setLocalDate(d ?? null)
               if (d) commit(d, localTime)
+              else onChange(null)
             }}
             classNames={{
               today: "text-neutral-900 dark:text-neutral-100 font-semibold",
