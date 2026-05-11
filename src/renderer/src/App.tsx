@@ -1,9 +1,12 @@
-function App(): JSX.Element {
+import { RouterProvider } from "react-router-dom"
+import { ThemeProvider } from "@/app/ThemeProvider"
+import { router } from "@/app/router"
+
+function App() {
   return (
-    <div className="container">
-      <h1>NoteNest</h1>
-      <p>Hello from NoteNest</p>
-    </div>
+    <ThemeProvider>
+      <RouterProvider router={router} />
+    </ThemeProvider>
   )
 }
 

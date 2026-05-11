@@ -5,3 +5,9 @@ dist
 *.log
 .DS_Store
 Thumbs.db
+# ignore worktrees and personal state, but track project config
+.claude/worktrees/
+.claude/*.local.*
+
+AGENT.md
+TASKS.md
