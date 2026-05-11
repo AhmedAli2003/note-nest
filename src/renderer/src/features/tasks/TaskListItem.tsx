@@ -35,7 +35,7 @@ export function TaskListItem({ task, onEdit, onDelete }: TaskListItemProps) {
       <div className="flex-1 min-w-0">
         <p
           className={cn(
-            "truncate text-sm font-semibold",
+            "truncate text-sm font-semibold text-neutral-900 dark:text-neutral-100",
             task.is_done && "line-through text-neutral-400 dark:text-neutral-500"
           )}
         >

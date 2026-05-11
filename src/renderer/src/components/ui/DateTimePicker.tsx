@@ -99,9 +99,17 @@ export function DateTimePicker({
           ref={popoverRef}
           role="dialog"
           className={cn(
-            "absolute left-0 top-full z-50 mt-1 rounded-lg border bg-white p-3 shadow-lg",
+            "fixed z-50 mt-1 rounded-lg border bg-white p-3 shadow-lg",
             "dark:border-neutral-700 dark:bg-neutral-900"
           )}
+          style={{
+            left: triggerRef.current
+              ? triggerRef.current.getBoundingClientRect().left
+              : "auto",
+            top: triggerRef.current
+              ? triggerRef.current.getBoundingClientRect().bottom + 4
+              : "auto",
+          }}
         >
           <DayPicker
             mode="single"

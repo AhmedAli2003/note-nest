@@ -54,7 +54,7 @@ export function TaskFormDialog({ open, onClose, mode, initial }: TaskFormDialogP
   }
 
   return (
-    <Modal open={open} onClose={onClose} labelledBy="task-form-title">
+    <Modal open={open} onClose={onClose} labelledBy="task-form-title" className="max-w-lg">
       <h2 id="task-form-title" className="text-lg font-semibold">
         {mode === "create" ? "New task" : "Edit task"}
       </h2>

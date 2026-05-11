@@ -45,7 +45,7 @@ export function NotesListItem({ note, isSelected, onSelect }: NotesListItemProps
         </span>
       </div>
       {second && (
-        <p className="mt-0.5 truncate text-xs text-neutral-500">
+        <p className="mt-0.5 truncate text-xs text-neutral-500 dark:text-neutral-400">
           {truncate(second, 60)}
         </p>
       )}
