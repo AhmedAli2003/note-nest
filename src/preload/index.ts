@@ -41,6 +41,7 @@ const api = {
   app: {
     openExternal: (url: string) => ipcRenderer.invoke("app:openExternal", url) as Promise<void>,
     exportDb: () => ipcRenderer.invoke("app:exportDb") as Promise<string | null>,
+    importDb: () => ipcRenderer.invoke("app:importDb") as Promise<"merged" | "replaced" | null>,
   },
 }
 

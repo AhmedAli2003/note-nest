@@ -2,6 +2,7 @@ import { Modal } from "@/components/ui/Modal"
 import { useSettingsStore } from "@/stores/settings"
 import { useThemeStore } from "@/stores/theme"
 import { useTasksStore } from "@/features/tasks/store"
+import pkg from "../../../../../package.json"
 
 export function SettingsDialog() {
   const open = useSettingsStore((s) => s.open)
@@ -97,7 +98,7 @@ export function SettingsDialog() {
             About
           </h3>
           <p className="text-sm text-neutral-700 dark:text-neutral-300">
-            Note Nest v0.1.0
+            Note Nest v{pkg.version ?? "0.1.0"}
           </p>
         </section>
       </div>
