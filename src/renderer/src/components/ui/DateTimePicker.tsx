@@ -99,17 +99,20 @@ export function DateTimePicker({
           ref={popoverRef}
           role="dialog"
           className={cn(
-            "fixed z-50 mt-1 rounded-lg border bg-white p-3 shadow-lg",
+            "fixed z-50 rounded-lg border bg-white p-3 shadow-lg",
             "dark:border-neutral-700 dark:bg-neutral-900"
           )}
-          style={{
-            left: triggerRef.current
-              ? triggerRef.current.getBoundingClientRect().left
-              : "auto",
-            top: triggerRef.current
-              ? triggerRef.current.getBoundingClientRect().bottom + 4
-              : "auto",
-          }}
+          style={(() => {
+            if (!triggerRef.current) return { left: 0, top: 0 }
+            const rect = triggerRef.current.getBoundingClientRect()
+            const popH = 420
+            const spaceBelow = window.innerHeight - rect.bottom
+            const flip = spaceBelow < popH && rect.top > popH
+            return {
+              left: rect.left,
+              top: flip ? rect.top - popH : rect.bottom + 4,
+            }
+          })()}
         >
           <DayPicker
             mode="single"
