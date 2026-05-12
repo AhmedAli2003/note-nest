@@ -2,6 +2,10 @@ appId: com.notenest.app
 productName: "Note Nest"
 copyright: "Copyright © 2026 Ahmed Abu Ali"
 
+compression: maximum
+
+afterPack: scripts/strip-locales.cjs
+
 directories:
   output: dist
   buildResources: buildResources
